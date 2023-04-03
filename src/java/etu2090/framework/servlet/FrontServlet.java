@@ -4,8 +4,10 @@
  */
 package etu2090.framework.servlet;
 
+import etu2090.framework.Mapping;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class FrontServlet extends HttpServlet {
 
+    //creation d'un attribut MappingUrls de type HashMap<String,Mapping>
+     HashMap<String, Mapping> mappingUrls=new HashMap <String, Mapping>();
+
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -53,6 +59,23 @@ public class FrontServlet extends HttpServlet {
         }
     }
 
+    
+    
+/**
+ * Retourne la map des urls mappées.
+     * @return 
+ */
+    public HashMap<String, Mapping> getMappingUrls() {
+        return mappingUrls;
+    }
+
+/**
+ * Définit la map des urls mappées.
+     * @param mappingUrls
+ */
+    public void setMappingUrls(HashMap<String, Mapping> mappingUrls) {
+        this.mappingUrls = mappingUrls;
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
