@@ -1,37 +1,38 @@
 @echo off
 
-rem compiling source code
-javac -classpath .\lib\servlet-api.jar;.\lib\r-w-x_file.jar -d .\bin\framework --enable-preview --release 19 %cd%\framework\src\*.java
+@REM rem compiling source code
+@REM javac -classpath .\lib\servlet-api.jar;.\lib\r-w-x_file.jar -d .\bin\framework --enable-preview --release 19 "%cd%"\framework\src\*.java
+javac -d .\bin\framework .\tempClass\*.java
 cd .\bin\framework
 
-rem exporting the framework to a jar file
+@REM rem exporting the framework to a jar file
 jar cvf ..\..\fw.jar *
-cd ..\..\
+cd ..\..\ 
+set CLASSPATH=%CLASSPATH%;"%cd%"\fw.jar
+echo %CLASSPATH%
 
-rem creating the directory structure for the project test to deploy
+@REM @REM rem creating the directory structure for the project test to deploy
 mkdir .\temp .\temp\WEB-INF .\temp\WEB-INF\classes .\temp\WEB-INF\lib
 
-rem copying jar file to the project library and the web.xml file
+@REM @REM @REM rem copying jar file to the project library and the web.xml file
 copy .\fw.jar .\temp\WEB-INF\lib\ 
-copy .\lib\*.jar .\temp\WEB-INF\lib\
-copy .\testframework\web.xml .\temp\WEB-INF\
-copy ./testframework/*.jsp ./temp/
-copy ./testframework/views/* ./temp/views/
-copy ./testframework/models/* ./temp/models/
+@REM copy .\lib\*.jar .\temp\WEB-INF\lib\
+copy .\testframework\src\java\web.xml .\temp\WEB-INF\
 
-rem compiling models and other user necessity to the project classes directory
-javac -classpath .\fw.jar -d .\temp\WEB-INF\classes --enable-preview --release 19 %cd%\TestFramework\*.java
+@REM @REM rem compiling models and other user necessity to the project classes directory
+javac -classpath .\fw.jar -d .\temp\WEB-INF\classes .\testframework\src\java\model\*.java
+
 cd .\temp
 
-rem exporting the temp directory to a war file
-jar cvf ..\testFramework.war *
+@REM rem exporting the temp directory to a war file
+jar cvf ..\testFramework2.war *
 cd ..
 
-rem deploying the war file to Tomcat
-copy .\testFramework.war "C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\"
+@REM rem deploying the war file to Tomcat
+copy .\testFramework2.war "C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\"
 
-rem removing temp directory
+@REM rem removing temp directory
 rmdir /s /q .\temp
 
-echo Deployment of testFramework.war completed.
-pause
+@REM echo Deployment of testFramework.war completed.
+@REM pause

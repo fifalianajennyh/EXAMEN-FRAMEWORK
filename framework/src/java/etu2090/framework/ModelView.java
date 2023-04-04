@@ -1,4 +1,4 @@
-package etu2090.framework.modelView;
+package etu2011.framework.renderer;
 
 public class ModelView {
 
