@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import etu2090.framework.annotation.Url;
+import etu2090.framework.modelView.ModelView;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -60,10 +61,44 @@ public class FrontServlet extends HttpServlet {
             {
                String key = entry.getKey();
                 Mapping mai = entry.getValue();
-                out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod());
-            }    
+            //    out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod());
+            if (mai != null) {
+                try {
+                    Object target = Class.forName(mapping.getClassName()).getConstructor().newInstance();
+                    Method method = target.getClass().getDeclaredMethod(mapping.getMethod());
+                    Object result = method.invoke(target);
+                    if (result instanceof ModelView modelView) {
+                        String view = modelView.getView();
+                        RequestDispatcher dispatcher = req.getRequestDispatcher(view);
+                        dispatcher.forward(req, resp);
+                    }
+                } catch (NoSuchMethodException e) {
+                    out.println(e);
+                } catch (SecurityException e) {
+                    out.println(e);
+                } catch (ClassNotFoundException e) {
+                    out.println(e);
+                } catch (IllegalAccessException e) {
+                    out.println(e);
+                } catch (InvocationTargetException e) {
+                    out.println(e);
+                } catch (InstantiationException e) {
+                    out.println(e);
+                } catch (IllegalArgumentException e) {
+                    out.println(e);
+                } catch (ServletException e) {
+                    out.println(e);
+                }
+            } else {
+                resp.sendError(404);
+                return;
+            }
+        }
+            
+            
+     }    
          
-    }
+    //}
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {

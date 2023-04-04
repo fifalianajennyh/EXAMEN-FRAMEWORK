@@ -14,7 +14,10 @@ mkdir .\temp .\temp\WEB-INF .\temp\WEB-INF\classes .\temp\WEB-INF\lib
 rem copying jar file to the project library and the web.xml file
 copy .\fw.jar .\temp\WEB-INF\lib\ 
 copy .\lib\*.jar .\temp\WEB-INF\lib\
-copy .\TestFramework\web.xml .\temp\WEB-INF\
+copy .\testframework\web.xml .\temp\WEB-INF\
+copy ./testframework/*.jsp ./temp/
+copy ./testframework/views/* ./temp/views/
+copy ./testframework/models/* ./temp/models/
 
 rem compiling models and other user necessity to the project classes directory
 javac -classpath .\fw.jar -d .\temp\WEB-INF\classes --enable-preview --release 19 %cd%\TestFramework\*.java
