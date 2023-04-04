@@ -3,14 +3,17 @@
     <servlet>
         <servlet-name>FrontServlet</servlet-name>
         <servlet-class>etu2090.framework.servlet.FrontServlet</servlet-class>
+        <init-param>
+            <param-name>modelPackage</param-name>
+            <param-value>model</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>FrontServlet</servlet-name>
-        <url-pattern>/FrontServlet</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
-    <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
-    </session-config>
+  <session-config>
+  <session-timeout>30</session-timeout>
+</session-config>
+
 </web-app>
