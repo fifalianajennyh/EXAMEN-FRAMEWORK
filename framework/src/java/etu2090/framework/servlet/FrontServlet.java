@@ -4,10 +4,10 @@
  */
 package etu2090.framework.servlet;
 import etu2090.framework.Mapping;
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
 import etu2090.framework.annotation.Url;
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +33,11 @@ public class FrontServlet extends HttpServlet {
     /**
      * Initialise la servlet.
      * @param config
-     * @throws javax.servlet.ServletException
+     * @throws ServletException
      */
 
     @Override
-    public void init(ServletConfig config) throws javax.servlet.ServletException {
+    public void init(ServletConfig config) throws ServletException {
         super.init(config);
         
         this.packages=getServletConfig().getInitParameter("modelPackage");
@@ -54,19 +54,26 @@ public class FrontServlet extends HttpServlet {
     @SuppressWarnings("empty-statement")
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         PrintWriter out=resp.getWriter();
+        String url = req.getRequestURL().toString();
+        String page=url.substring(url.lastIndexOf("/")+1);
+ 
                        ///fomba fiafficher na HashMap   
      //     out.println(this.packages); 
       for(Map.Entry<String, Mapping> entry : this.mappingUrls.entrySet()) 
             {
                String key = entry.getKey();
                 Mapping mai = entry.getValue();
+                if (key.compareTo(page)==0) {
                 out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod());
+                out.println("url est:" +url);
+                out.println("page"+page);
             }    
+        }
          
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             try {
                 processRequest(request, response);
@@ -80,7 +87,7 @@ public class FrontServlet extends HttpServlet {
 
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             processRequest(request, response);
         } catch (URISyntaxException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
