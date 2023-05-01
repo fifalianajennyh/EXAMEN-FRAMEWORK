@@ -12,29 +12,27 @@ set CLASSPATH=%CLASSPATH%;"%cd%"\fw.jar
 echo %CLASSPATH%
 
 @REM @REM rem creating the directory structure for the project test to deploy
-mkdir .\temp .\temp\WEB-INF .\temp\WEB-INF\classes .\temp\WEB-INF\lib .\temp\WEB-INF\views
+mkdir .\temp .\temp\WEB-INF .\temp\WEB-INF\classes .\temp\WEB-INF\lib
 
 @REM @REM @REM rem copying jar file to the project library and the web.xml file
 copy .\fw.jar .\temp\WEB-INF\lib\ 
 @REM copy .\lib\*.jar .\temp\WEB-INF\lib\
 copy .\testframework\src\java\web.xml .\temp\WEB-INF\
-copy .\testframework\src\java\views\*.jsp .\temp\WEB-INF\views
-copy .\testFramework\*.jsp .\temp\
-
+copy .\testframework\*.jsp .\temp\
 @REM @REM rem compiling models and other user necessity to the project classes directory
 javac -classpath .\fw.jar -d .\temp\WEB-INF\classes .\testframework\src\java\model\*.java
 
-cd .\temp
+@REM cd .\temp
 
-@REM rem exporting the temp directory to a war file
-jar cvf ..\testFramework4Sprint6.war *
-cd ..
+@REM @REM rem exporting the temp directory to a war file
+@REM jar cvf ..\testFramework2.war *
+@REM cd ..
 
 @REM rem deploying the war file to Tomcat
-copy .\testFramework4Sprint6.war "C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\"
+@REM copy .\testFramework2.war "C:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\"
 
 @REM rem removing temp directory
-rmdir /s /q .\temp
+@REM rmdir /s /q .\temp
 
 @REM echo Deployment of testFramework.war completed.
 @REM pause
