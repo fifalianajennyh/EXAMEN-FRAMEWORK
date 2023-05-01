@@ -5,11 +5,15 @@
 package model;
 
 import etu2090.framework.annotation.Url;
+import etu2090.framework.ModelViews.ModelView;
 public class Dept{
-    @Url(value="getAll")
-    public void maMethode() {
-        // corps de la méthode
-        System.out.println("ok");
+    @Url("getAllDept")
+    public ModelView myMethodDept() {
+        String s1=".jsp";
+        String s="test";
+        String vString=s+s1;
+       ModelView m=new ModelView(vString);
+        return m;
     }
     
 }
