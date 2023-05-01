@@ -4,14 +4,16 @@
  */
 package etu2090.framework.servlet;
 import etu2090.framework.Mapping;
-import javax.servlet.*;
-import javax.servlet.http.*;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import etu2090.framework.annotation.Url;
+import etu2090.framework.ModelViews.ModelView;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -19,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 //import model.Dept;
 //import model.Emp;
 
@@ -33,11 +37,11 @@ public class FrontServlet extends HttpServlet {
     /**
      * Initialise la servlet.
      * @param config
-     * @throws ServletException
+     * @throws javax.servlet.ServletException
      */
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) throws javax.servlet.ServletException {
         super.init(config);
         
         this.packages=getServletConfig().getInitParameter("modelPackage");
@@ -51,26 +55,64 @@ public class FrontServlet extends HttpServlet {
                 
     }
 
+    
     @SuppressWarnings("empty-statement")
-    public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, ServletException {
         PrintWriter out=resp.getWriter();
-                       ///fomba fiafficher na HashMap   
-     //     out.println(this.packages); 
+        String url=req.getRequestURI();
+        String page=url.substring(url.lastIndexOf("/")+1);
+        
+        
+       // Mapping mapping = this.getMappingUrls().get(page);
+        
       for(Map.Entry<String, Mapping> entry : this.mappingUrls.entrySet()) 
             {
                String key = entry.getKey();
                 Mapping mai = entry.getValue();
-                out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod());
-            }    
-         
-    }
+                out.print(page);
+                //out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod()); 
+            if (key.compareTo(page)==0) {
+                
+                try {
+                    PrintWriter oPrintWriter=resp.getWriter();
+                    Class<?> class1=Class.forName(packages+"."+mai.getClassName());
+                    Object object=class1.newInstance();
+              //      oPrintWriter.println(class1.getName());
 
+                    Method method=object.getClass().getMethod(mai.getMethod());
+            //        oPrintWriter.println(method.getName());
+                    ModelView view=(ModelView)method.invoke(object);
+                    String modelString="WEB-INF/views/"+view.getView();
+                 RequestDispatcher dispatcher = req.getRequestDispatcher(modelString);
+                   dispatcher.forward(req, resp);                   
+
+                /*Method method = target.getClass().getDeclaredMethod(mai.getMethod());
+                    Object result = method.invoke(target);
+                    out.println(method.getName());
+                    /*if (result instanceof ModelView modelView) {
+                        String view = modelView.getView();
+                        RequestDispatcher dispatcher = req.getRequestDispatcher(view);
+                        dispatcher.forward(req, resp);
+                    }*/
+                } catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException e) {
+                    out.println(e.getMessage());
+                
+                }
+
+                
+                }
+        
+        }
+            
+            
+     }    
+         
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         try {
             try {
                 processRequest(request, response);
-            } catch (InstantiationException | IllegalAccessException ex) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (URISyntaxException | ClassNotFoundException ex) {
@@ -80,10 +122,10 @@ public class FrontServlet extends HttpServlet {
 
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         try {
             processRequest(request, response);
-        } catch (URISyntaxException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (URISyntaxException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
             Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -121,22 +163,6 @@ public void getAllMapping(String packageName) throws URISyntaxException {
         
    // return mappingUrls;
     }
-
-
-
-        
-        //Class<?> classe = Class.forName("etu2090.framework.Mapping");
-        //Method[] methods = classe.getDeclaredMethods();
-        //for (Method method : methods) {
-        //  if (method.isAnnotationPresent(Url.class)) {
-        //    Url urlAnnotation = method.getAnnotation(Url.class);
-        //Mapping mapping = new Mapping();
-        //mapping.setClassName(urlAnnotation.value());
-        //mapping.setMethod(method.getName());
-        //mappingUrls.put(urlAnnotation.value(), mapping);
-        //}
-        //}
-
 
 
 
