@@ -13,7 +13,9 @@ public class Dept{
         String s="test";
         String vString=s+s1;
        ModelView m=new ModelView(vString);
+       m.add("test1", "Jesus is my love and my life");
+       m.add("test2", "Jesus love you");
+       //m.add("test2", new String[] { "Tableau Mety"});
         return m;
     }
-    
 }

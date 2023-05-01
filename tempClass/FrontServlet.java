@@ -34,6 +34,16 @@ public class FrontServlet extends HttpServlet {
    // private static final long serialVersionUID = 1L;
      HashMap<String, Mapping> mappingUrls=new HashMap <String, Mapping>();
      String packages;
+     
+     String viewsDirectory;
+
+     public String getViewsDirectory() {
+         return viewsDirectory;
+     }
+ 
+     public void setViewsDirectory(String viewsDirectory) {
+         this.viewsDirectory = viewsDirectory;
+     }
     /**
      * Initialise la servlet.
      * @param config
@@ -83,17 +93,21 @@ public class FrontServlet extends HttpServlet {
             //        oPrintWriter.println(method.getName());
                     ModelView view=(ModelView)method.invoke(object);
                     String modelString="WEB-INF/views/"+view.getView();
+                    Map<String, Object> data = view.getData();
+                   /*for(Map.Entry<String, Mapping> dEntry : this.mappingUrls.entrySet())
+                   {
+                      // req.setAttribute(dEntry.getKey(),dEntry.getValue());
+                       req.setAttribute("test1", data);
+                      // oPrintWriter.println(dEntry.getValue());
+                   }*/
+                   for (Map.Entry<String,Object> dEntry: view.getData().entrySet()) {
+                    String k=dEntry.getKey();
+                    Object o=dEntry.getValue();
+                    req.setAttribute(k,o);
+                   }
                  RequestDispatcher dispatcher = req.getRequestDispatcher(modelString);
                    dispatcher.forward(req, resp);                   
-
-                /*Method method = target.getClass().getDeclaredMethod(mai.getMethod());
-                    Object result = method.invoke(target);
-                    out.println(method.getName());
-                    /*if (result instanceof ModelView modelView) {
-                        String view = modelView.getView();
-                        RequestDispatcher dispatcher = req.getRequestDispatcher(view);
-                        dispatcher.forward(req, resp);
-                    }*/
+                
                 } catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException e) {
                     out.println(e.getMessage());
                 

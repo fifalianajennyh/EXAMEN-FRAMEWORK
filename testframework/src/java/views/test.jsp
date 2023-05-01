@@ -4,6 +4,7 @@
     Author     : itu
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="model.Dept" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,11 @@
     <title>Bienvenue</title>
 </head>
 <body>
-    <h1>FRAMEWORK JENNY 2090</h1>
+    <h1>FRAMEWORK JENNY</h1>
     <p>Mety le izy</p>
+     <p><%= request.getAttribute("test1") %></p>
+     <p>Do you know that:</p>
+      <% String a=(String)request.getAttribute("test2"); %>
+    <h3><%out.print(a);%></h3>
 </body>
 </html>
