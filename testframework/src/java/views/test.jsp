@@ -11,15 +11,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/insertion.css">
-    <title>Page  |Insertion</title>
+    <title>Bienvenue</title>
 </head>
 <body>
-    <h1>FRAMEWORK</h1>
-    <form action="" method="get">
-    <p>Entrer votre nom= <input type="text" name="nom"></p>
-    <p>Entrer votre age= <input type="number" name="age"></p>
-    <input type="submit" value="ok">
-    </form>
-    <p><a href ="">Test1</a></p>
+    <h1>FRAMEWORK JENNY 2090</h1>
+    <p>Mety le izy</p>
 </body>
 </html>
