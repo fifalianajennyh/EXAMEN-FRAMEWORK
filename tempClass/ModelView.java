@@ -8,21 +8,45 @@ package etu2090.framework.ModelViews;
  *
  * @author itu
  */
-public class ModelView {
-      String view;
+import java.util.HashMap;
+import java.util.Map;
 
-    // constructor
+public class ModelView {
+
+    private String view;
+    private Map<String, Object> data;
+
+    // constructors
     public ModelView(String view) {
         this.setView(view);
+        this.setData(new HashMap<>());
     }
 
-    // setter
+    public ModelView(String view, Map<String, Object> data) {
+        this.setView(view);
+        this.setData(data);
+    }
+
+    // setters
     public void setView(String view) {
         this.view = view;
     }
 
-    // getter
+    public void setData(Map<String, Object> data) {
+        this.data = data;
+    }
+
+    // getters
     public String getView() {
         return this.view;
-    }   
+    }
+
+    public Map<String, Object> getData() {
+        return this.data;
+    }
+
+    // methods
+    public void add(String key, Object value) {
+        this.data.put(key, value);
+    }
 }

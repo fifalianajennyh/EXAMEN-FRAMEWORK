@@ -34,6 +34,16 @@ public class FrontServlet extends HttpServlet {
    // private static final long serialVersionUID = 1L;
      HashMap<String, Mapping> mappingUrls=new HashMap <String, Mapping>();
      String packages;
+     
+     String viewsDirectory;
+
+     public String getViewsDirectory() {
+         return viewsDirectory;
+     }
+ 
+     public void setViewsDirectory(String viewsDirectory) {
+         this.viewsDirectory = viewsDirectory;
+     }
     /**
      * Initialise la servlet.
      * @param config
@@ -63,39 +73,41 @@ public class FrontServlet extends HttpServlet {
         String page=url.substring(url.lastIndexOf("/")+1);
         
         
-      //  Mapping mapping = this.getMappingUrls().get(page);
+       // Mapping mapping = this.getMappingUrls().get(page);
         
       for(Map.Entry<String, Mapping> entry : this.mappingUrls.entrySet()) 
             {
                String key = entry.getKey();
                 Mapping mai = entry.getValue();
                 out.print(page);
-               // out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod());
-
-                 if (key.compareTo(page)==0) {     
-
+                //out.println("valeur de url    " + key + "     " + "    Nom de la classe qui a l'annotation       " + mai.getClassName() + "       " + "      methodes qui a l'annotation  " + mai.getMethod()); 
+            if (key.compareTo(page)==0) {
+                
                 try {
                     PrintWriter oPrintWriter=resp.getWriter();
                     Class<?> class1=Class.forName(packages+"."+mai.getClassName());
                     Object object=class1.newInstance();
-                    oPrintWriter.println(class1.getName());
+              //      oPrintWriter.println(class1.getName());
 
                     Method method=object.getClass().getMethod(mai.getMethod());
-                    oPrintWriter.println(method.getName());
+            //        oPrintWriter.println(method.getName());
                     ModelView view=(ModelView)method.invoke(object);
                     String modelString="WEB-INF/views/"+view.getView();
-                   //oPrintWriter.println(modelString);
-                   RequestDispatcher dispatcher = req.getRequestDispatcher(modelString);
+                    Map<String, Object> data = view.getData();
+                   /*for(Map.Entry<String, Mapping> dEntry : this.mappingUrls.entrySet())
+                   {
+                      // req.setAttribute(dEntry.getKey(),dEntry.getValue());
+                       req.setAttribute("test1", data);
+                      // oPrintWriter.println(dEntry.getValue());
+                   }*/
+                   for (Map.Entry<String,Object> dEntry: view.getData().entrySet()) {
+                    String k=dEntry.getKey();
+                    Object o=dEntry.getValue();
+                    req.setAttribute(k,o);
+                   }
+                 RequestDispatcher dispatcher = req.getRequestDispatcher(modelString);
                    dispatcher.forward(req, resp);                   
-
-                /*Method method = target.getClass().getDeclaredMethod(mai.getMethod());
-                    Object result = method.invoke(target);
-                    out.println(method.getName());
-                    /*if (result instanceof ModelView modelView) {
-                        String view = modelView.getView();
-                        RequestDispatcher dispatcher = req.getRequestDispatcher(view);
-                        dispatcher.forward(req, resp);
-                    }*/
+                
                 } catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException e) {
                     out.println(e.getMessage());
                 
